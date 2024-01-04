@@ -553,6 +553,12 @@ const app = {
               "default": false,
               "title": "Brinde cumulativo",
               "description": "Se o brinde poderá ser aplicado com outras regras de brindes no mesmo carrinho"
+            },
+            "freebie_coupon": {
+              "type": "string",
+              "maxLength": 255,
+              "title": "Cupom de brinde",
+              "description": "Se preenchido, o brinde será disponibilizado apenas com a inserção do cupom"
             }
           }
         }
