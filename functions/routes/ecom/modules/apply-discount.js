@@ -6,6 +6,7 @@ const {
   checkOpenPromotion,
   getValidDiscountRules,
   matchDiscountRule,
+  matchFreebieRule,
   checkCampaignProducts
 } = require('../../../lib/helpers')
 
@@ -136,7 +137,8 @@ exports.post = ({ appSdk, admin }, req, res) => {
             validateCustomerId(rule, params) &&
             checkCampaignProducts(rule.check_product_ids, params) &&
             Array.isArray(rule.product_ids) &&
-            rule.product_ids.length
+            rule.product_ids.length &&
+            matchFreebieRule(rule, params)
         })
         if (validFreebiesRules) {
           const cumulativeRules = []

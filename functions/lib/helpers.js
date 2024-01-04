@@ -41,6 +41,15 @@ const validateCustomerId = (rule, params) => {
   return true
 }
 
+const matchFreebieRule = (rule, params = {}) => {
+  if (params.discount_coupon && rule.freebie_coupon) {
+    return params.discount === rule.freebie_coupon
+  } else if (!params.discount_coupon && rule.freebie_coupon) {
+    return false
+  }
+  return true
+}
+
 const checkOpenPromotion = rule => {
   return !rule.discount_coupon && !rule.utm_campaign &&
     (!Array.isArray(rule.customer_ids) || !rule.customer_ids.length)
@@ -200,5 +209,6 @@ module.exports = {
   checkOpenPromotion,
   getValidDiscountRules,
   matchDiscountRule,
+  matchFreebieRule,
   checkCampaignProducts
 }
