@@ -463,5 +463,5 @@
     }
   },
   "auth_callback_uri": "https://us-central1-ecom-discounts2.cloudfunctions.net/app/ecom/auth-callback",
-  "version": "2.20.2"
+  "version": "2.21.0"
 }
