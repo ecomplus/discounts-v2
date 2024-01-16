@@ -558,7 +558,7 @@ const app = {
               "type": "string",
               "maxLength": 255,
               "title": "Cupom de brinde",
-              "description": "Se preenchido, o brinde será disponibilizado apenas com a inserção do cupom"
+              "description": "Se preenchido, os brindes serão disponibilizados apenas com a inserção deste cupom"
             }
           }
         }
