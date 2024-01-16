@@ -42,10 +42,8 @@ const validateCustomerId = (rule, params) => {
 }
 
 const matchFreebieRule = (rule, params = {}) => {
-  if (params.discount_coupon && rule.freebie_coupon) {
+  if (rule.freebie_coupon) {
     return params.discount === rule.freebie_coupon
-  } else if (!params.discount_coupon && rule.freebie_coupon) {
-    return false
   }
   return true
 }
