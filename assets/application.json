@@ -449,6 +449,12 @@
               "default": false,
               "title": "Brinde cumulativo",
               "description": "Se o brinde poderá ser aplicado com outras regras de brindes no mesmo carrinho"
+            },
+            "freebie_coupon": {
+              "type": "string",
+              "maxLength": 255,
+              "title": "Cupom de brinde",
+              "description": "Se preenchido, os brindes serão disponibilizados apenas com a inserção deste cupom"
             }
           }
         }
