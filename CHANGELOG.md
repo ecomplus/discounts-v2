@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 2.21.0 (2024-01-16)
+
+
+### Features
+
+* add coupon option for freebies rules gift ([#2](https://github.com/ecomplus/application-starter/issues/2)) ([836996a](https://github.com/ecomplus/application-starter/commit/836996aa17e734d24139c5fe19d52d7c304cc95b))
+* cloning from https://github.com/ecomplus/discounts v1.20.6 ([7189234](https://github.com/ecomplus/application-starter/commit/7189234cad82a55c5c1791905b1df317ed8e1612))
+
 ## [1.0.0-starter.26](https://github.com/ecomplus/application-starter/compare/v1.0.0-starter.25...v1.0.0-starter.26) (2022-02-24)
 
 ## [1.0.0-starter.25](https://github.com/ecomplus/application-starter/compare/v1.0.0-starter.24...v1.0.0-starter.25) (2022-02-24)
