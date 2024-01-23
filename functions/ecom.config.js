@@ -559,6 +559,12 @@ const app = {
               "maxLength": 255,
               "title": "Cupom de brinde",
               "description": "Se preenchido, os brindes serão disponibilizados apenas com a inserção deste cupom"
+            },
+            "freebie_utm": {
+              "type": "string",
+              "maxLength": 255,
+              "title": "Utm de brinde",
+              "description": "Se preenchido, os brindes serão disponibilizados apenas com o uso do utm"
             }
           }
         }

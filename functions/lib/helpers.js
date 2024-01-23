@@ -42,8 +42,14 @@ const validateCustomerId = (rule, params) => {
 }
 
 const matchFreebieRule = (rule, params = {}) => {
-  if (rule.freebie_coupon) {
-    return params.discount_coupon === rule.freebie_coupon
+  const coupon = params.discount_coupon
+  const utm = params.utm && params.utm.campaign
+  if (rule.freebie_coupon && rule.freebie_utm) {
+    return coupon?.toUpperCase() === rule.freebie_coupon?.toUpperCase() || (utm?.toUpperCase() === rule.freebie_utm?.toUpperCase())
+  } else if (rule.freebie_coupon) {
+    return coupon?.toUpperCase() === rule.freebie_coupon?.toUpperCase()
+  } else if (rule.freebie_utm) {
+    return (utm?.toUpperCase() === rule.freebie_utm?.toUpperCase())
   }
   return true
 }
