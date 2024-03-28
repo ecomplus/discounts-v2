@@ -36,6 +36,7 @@ exports.post = ({ appSdk, admin }, req, res) => {
 
   const checkUsageLimit = async (discountRule, label) => {
     const { customer } = params
+    console.log('check usage limit', JSON.stringify(discountRule), label, JSON.stringify(customer))
     if (!label) {
       label = discountRule.label
     }
