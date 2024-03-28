@@ -119,7 +119,9 @@ const getValidDiscountRules = (discountRules, params, items) => {
           }
         }
       }
+      console.log(rule.min_quantity >= 1, rule.same_product_quantity, Array.isArray(items) && items.length, !(Array.isArray(rule.product_ids) && rule.product_ids.length))
       if(rule.min_quantity >= 1 && rule.same_product_quantity && Array.isArray(items) && items.length && !(Array.isArray(rule.product_ids) && rule.product_ids.length)) {
+        console.log('inside checking rule')
         return items.some(({quantity}) => quantity === rule.min_quantity)
       } 
       if (!rule.discount || !rule.discount.value) {
