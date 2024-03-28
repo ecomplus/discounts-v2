@@ -119,7 +119,9 @@ const getValidDiscountRules = (discountRules, params, items) => {
             value
           }
         }
-      }
+      } else if(rule.min_quantity >= 1 && rule.same_product_quantity && Array.isArray(items) && !Array.isArray(rule.product_ids)) {
+        return items.some(({quantity}) => quantity === rule.min_quantity)
+      } 
       if (!rule.discount || !rule.discount.value) {
         return false
       }
