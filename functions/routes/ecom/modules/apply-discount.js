@@ -59,11 +59,13 @@ exports.post = ({ appSdk, admin }, req, res) => {
         query: '',
         max: discountRule.total_usage_limit
       }]
+      console.log('log for usage new user', url, JSON.stringify(usageLimits))
       for (let i = 0; i < usageLimits.length; i++) {
         const { query, max } = usageLimits[i]
         if (max) {
           // send Store API request to list orders with filters
           const { response } = await appSdk.apiRequest(storeId, `${url}${query}`)
+          console.log('response result', response.data)
           const countOrders = response.data.result
             .filter(({ status }) => status !== 'cancelled')
             .length
