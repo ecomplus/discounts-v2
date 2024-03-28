@@ -66,7 +66,7 @@ const getValidDiscountRules = (discountRules, params, items) => {
       if (!rule || !validateCustomerId(rule, params)) {
         return false
       }
-
+      console.log('items validation:', JSON.stringify(items), 'rule validation', JSON.stringify(rule))
       if (Array.isArray(rule.product_ids) && Array.isArray(items)) {
         const checkProductId = item => {
           if (!rule.product_ids.length && Array.isArray(rule.category_ids) && rule.category_ids.length) {
