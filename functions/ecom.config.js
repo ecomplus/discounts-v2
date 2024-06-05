@@ -302,6 +302,12 @@ const app = {
               "default": true,
               "title": "Desconto cumulativo",
               "description": "Se a promoção poderá ser aplicada junto a descontos de pagamento/entrega"
+            },
+            "domain": {
+              "type": "string",
+              "maxLength": 100,
+              "title": "Desconto por domínio",
+              "description": "Caso trabalhe com multilojas, o domínio irá filtrar o desconto pelo domínio"
             }
           }
         }
@@ -452,6 +458,12 @@ const app = {
                   "description": "Valor percentual ou fixo a ser descontado, dependendo to tipo configurado"
                 }
               }
+            },
+            "domain": {
+              "type": "string",
+              "maxLength": 100,
+              "title": "Desconto por domínio",
+              "description": "Caso trabalhe com multilojas, o domínio irá filtrar o desconto pelo domínio"
             }
           }
         }
@@ -565,6 +577,12 @@ const app = {
               "maxLength": 255,
               "title": "Utm de brinde",
               "description": "Se preenchido, os brindes serão disponibilizados apenas com o uso do utm"
+            },
+            "domain": {
+              "type": "string",
+              "maxLength": 100,
+              "title": "Desconto por domínio",
+              "description": "Caso trabalhe com multilojas, o domínio irá filtrar o desconto pelo domínio"
             }
           }
         }
