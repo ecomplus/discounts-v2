@@ -44,12 +44,15 @@ const validateCustomerId = (rule, params) => {
 const matchFreebieRule = (rule, params = {}) => {
   const coupon = params.discount_coupon
   const utm = params.utm && params.utm.campaign
-  if (rule.freebie_coupon && rule.freebie_utm) {
+  const hasDiscountDomain = !rule.domain || (rule.domain === params.domain)
+  if (rule.freebie_coupon && rule.freebie_utm && hasDiscountDomain) {
     return coupon?.toUpperCase() === rule.freebie_coupon?.toUpperCase() || (utm?.toUpperCase() === rule.freebie_utm?.toUpperCase())
-  } else if (rule.freebie_coupon) {
+  } else if (rule.freebie_coupon && hasDiscountDomain) {
     return coupon?.toUpperCase() === rule.freebie_coupon?.toUpperCase()
-  } else if (rule.freebie_utm) {
+  } else if (rule.freebie_utm && hasDiscountDomain) {
     return (utm?.toUpperCase() === rule.freebie_utm?.toUpperCase())
+  } else if (rule.domain) {
+    return rule.domain === params.domain
   }
   return true
 }
@@ -143,10 +146,13 @@ const matchDiscountRule = (discountRules, params = {}, skipApplyAt) => {
     // match only by discount coupon
     return {
       discountRule: filteredRules.find(rule => {
+        const hasDiscountDomain = !rule.domain || (rule.domain === params.domain)
         return rule.case_insensitive
           ? typeof rule.discount_coupon === 'string' &&
-            rule.discount_coupon.toUpperCase() === params.discount_coupon.toUpperCase()
-          : rule.discount_coupon === params.discount_coupon
+            rule.discount_coupon.toUpperCase() === params.discount_coupon.toUpperCase() && 
+            hasDiscountDomain
+          : rule.discount_coupon === params.discount_coupon &&
+            hasDiscountDomain
       }),
       discountMatchEnum: 'COUPON'
     }
@@ -155,10 +161,13 @@ const matchDiscountRule = (discountRules, params = {}, skipApplyAt) => {
   // try to match by UTM campaign first
   if (params.utm && params.utm.campaign) {
     const discountRule = filteredRules.find(rule => {
+      const hasDiscountDomain = !rule.domain || (rule.domain === params.domain)
       return rule.case_insensitive
         ? typeof rule.utm_campaign === 'string' &&
-          rule.utm_campaign.toUpperCase() === params.utm.campaign.toUpperCase()
-        : rule.utm_campaign === params.utm.campaign
+          rule.utm_campaign.toUpperCase() === params.utm.campaign.toUpperCase() &&
+          hasDiscountDomain
+        : rule.utm_campaign === params.utm.campaign &&
+          hasDiscountDomain
     })
     if (discountRule) {
       return {
@@ -170,12 +179,29 @@ const matchDiscountRule = (discountRules, params = {}, skipApplyAt) => {
 
   // then try to match by customer
   if (params.customer && params.customer._id) {
-    const discountRule = filteredRules.find(rule => Array.isArray(rule.customer_ids) &&
-      rule.customer_ids.indexOf(params.customer._id) > -1)
+    const discountRule = filteredRules.find(rule => {
+      const hasDiscountDomain = !rule.domain || (rule.domain === params.domain)
+      return Array.isArray(rule.customer_ids) &&
+      rule.customer_ids.indexOf(params.customer._id) > -1 &&
+      hasDiscountDomain
+    })
     if (discountRule) {
       return {
         discountRule,
         discountMatchEnum: 'CUSTOMER'
+      }
+    }
+  }
+
+  // then try to match by domain
+  if (params.domain) {
+    const discountRule = filteredRules.find(rule => {
+      return rule.domain === params.domain
+    })
+    if (discountRule) {
+      return {
+        discountRule,
+        discountMatchEnum: 'STORE_DOMAIN'
       }
     }
   }
