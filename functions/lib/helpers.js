@@ -69,9 +69,9 @@ const getValidDiscountRules = (discountRules, params, items) => {
       if (!rule || !validateCustomerId(rule, params)) {
         return false
       }
-      if (Array.isArray(rule.product_ids) && Array.isArray(items)) {
+      if ((Array.isArray(rule.product_ids) || (Array.isArray(rule.category_ids))) && Array.isArray(items)) {
         const checkProductId = item => {
-          if (!rule.product_ids.length && Array.isArray(rule.category_ids) && rule.category_ids.length) {
+          if (!(rule.product_ids && rule.product_ids.length) && Array.isArray(rule.category_ids) && rule.category_ids.length) {
             if (Array.isArray(item.categories)) {
               for (let i = 0; i < item.categories.length; i++) {
                 const category = item.categories[i]
@@ -82,7 +82,7 @@ const getValidDiscountRules = (discountRules, params, items) => {
             }
             return false
           }
-          return (!rule.product_ids.length || rule.product_ids.indexOf(item.product_id) > -1)
+          return (!(rule.product_ids && rule.product_ids.length) || rule.product_ids.indexOf(item.product_id) > -1)
         }
         // set/add discount value from lowest item price
         let value
