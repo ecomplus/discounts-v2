@@ -102,6 +102,7 @@ const getValidDiscountRules = (discountRules, params, items) => {
             }
           })
         }
+        console.log('log for buy together', value)
         if (value) {
           if (rule.discount && rule.discount.value) {
             if (rule.discount.type === 'percentage') {
