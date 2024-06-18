@@ -122,7 +122,42 @@ const getValidDiscountRules = (discountRules, params, items) => {
             value
           }
         }
+      } else if ((Array.isArray(rule.category_ids)) && Array.isArray(params.items)) {
+        const categoryIds = rule.category_ids
+        const enableCategoryProductsOnly = rule.enable_category_products_only
+        let value = 0
+        params.items.forEach(item => {
+          const haveCategory = item.categories?.find(category => categoryIds.includes(category._id))
+          const price = ecomUtils.price(item)
+          if (price > 0 && ((enableCategoryProductsOnly && haveCategory) || !enableCategoryProductsOnly)) {
+            value += price * item.quantity
+          }
+        })
+
+        console.log('log discount by category', value)
+        if (value) {
+          if (rule.discount && rule.discount.value) {
+            if (rule.discount.type === 'percentage') {
+              value *= rule.discount.value / 100
+            } else {
+              if (rule.discount_kit_subtotal) {
+                value = rule.discount.value
+              } else {
+                value = Math.min(value, rule.discount.value)
+              }
+            }
+          }
+          rule.originalDiscount = rule.discount
+          rule.discount = {
+            ...rule.discount,
+            type: 'fixed',
+            value
+          }
+        } else {
+          return false
+        }
       }
+
       if (!rule.discount || !rule.discount.value) {
         return false
       }
