@@ -82,8 +82,13 @@ exports.post = ({ appSdk, admin }, req, res) => {
 
   const getDiscountValue = (discount, maxDiscount) => {
     let value
+    const {
+      category_ids: categoryIds,
+      enable_category_products_only: enableCategoryProductsOnly
+    } = discount
+
+    const applyAt = discount.apply_at || 'total'
     if (typeof maxDiscount !== 'number') {
-      const applyAt = discount.apply_at || 'total'
       maxDiscount = params.amount[applyAt]
       if (applyAt === 'total' && response.discount_rule) {
         maxDiscount -= response.discount_rule.extra_discount.value
@@ -103,6 +108,17 @@ exports.post = ({ appSdk, admin }, req, res) => {
       if (value > maxDiscount) {
         value = maxDiscount
       }
+    }
+    if (applyAt !== 'freight' && categoryIds?.length && enableCategoryProductsOnly) {
+      // check items have category
+      let valueBack = 0
+      params.items.forEach(item => {
+        const haveCategory = item.categories?.find(category => categoryIds.includes(category._id))
+        if (!haveCategory && discount.type === 'percentage') {
+          valueBack += (item.final_price || item.price) * discount.value / 100
+        }
+      })
+      value -= valueBack
     }
     return value
   }
@@ -494,6 +510,11 @@ exports.post = ({ appSdk, admin }, req, res) => {
         }
 
         let { label, discount } = discountRule
+        if (discountRule.category_ids) {
+          discount.category_ids = discountRule.category_ids
+          discount.enable_category_products_only = discountRule.enable_category_products_only
+        }
+
         if (typeof label !== 'string' || !label) {
           label = params.discount_coupon || `DISCOUNT ${discountMatchEnum}`
         }
@@ -567,6 +588,10 @@ exports.post = ({ appSdk, admin }, req, res) => {
                     secondDiscountRule.cumulative_discount !== false &&
                     !(secondDiscountRule.discount.min_amount > checkAmount)
                   ) {
+                    if (secondDiscountRule.category_ids) {
+                      secondDiscountRule.discount.category_ids = secondDiscountRule.category_ids
+                      secondDiscountRule.discount.enable_category_products_only = secondDiscountRule.enable_category_products_only
+                    }
                     addDiscount(secondDiscountRule.discount, secondDiscountMatchEnum + '-2')
                   }
                 }
@@ -588,6 +613,10 @@ exports.post = ({ appSdk, admin }, req, res) => {
                   if (response.discount_rule) checkAmount -= response.discount_rule.extra_discount.value
                   if (openDiscountRule.discount.amount_field !== 'freight') checkAmount -= getFreebiesPreview().value
                   if (openDiscountRule.discount.min_amount <= checkAmount) {
+                    if (openDiscountRule.category_ids) {
+                      openDiscountRule.discount.category_ids = openDiscountRule.category_ids
+                      openDiscountRule.discount.enable_category_products_only = openDiscountRule.enable_category_products_only
+                    }
                     addDiscount(openDiscountRule.discount, openDiscountMatchEnum)
                   }
                 }

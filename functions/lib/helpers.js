@@ -150,7 +150,7 @@ const matchDiscountRule = (discountRules, params = {}, skipApplyAt) => {
         const hasDiscountDomain = !rule.domain || (rule.domain === params.domain)
         return rule.case_insensitive
           ? typeof rule.discount_coupon === 'string' &&
-            rule.discount_coupon.toUpperCase() === params.discount_coupon.toUpperCase() && 
+            rule.discount_coupon.toUpperCase() === params.discount_coupon.toUpperCase() &&
             hasDiscountDomain
           : rule.discount_coupon === params.discount_coupon &&
             hasDiscountDomain
