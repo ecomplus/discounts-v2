@@ -260,7 +260,7 @@ exports.post = ({ appSdk, admin }, req, res) => {
           return kitDiscount
         })
       }
-      const kitDiscounts = getValidDiscountRules(config.product_kit_discounts, params, params.items)
+      const kitDiscounts = getValidDiscountRules(storeId, config.product_kit_discounts, params, params.items)
         .sort((a, b) => {
           if (!Array.isArray(a.product_ids) || !a.product_ids.length) {
             if (Array.isArray(b.product_ids) && b.product_ids.length) {
@@ -466,7 +466,7 @@ exports.post = ({ appSdk, admin }, req, res) => {
       }
     })
 
-    const discountRules = getValidDiscountRules(config.discount_rules, params)
+    const discountRules = getValidDiscountRules(storeId, config.discount_rules, params)
     if (discountRules.length) {
       const { discountRule, discountMatchEnum } = matchDiscountRule(discountRules, params)
       if (discountRule) {
