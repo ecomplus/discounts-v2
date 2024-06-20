@@ -165,7 +165,6 @@ const getValidDiscountRules = (storeId, discountRules, params, items) => {
         const enableCategoryProductsOnly = rule.enable_category_products_only
         let value = 0
         params.items.forEach(item => {
-          console.log('>> sku ', item.sku)
           const haveCategory = item.categories?.find(category => categoryIds.includes(category._id))
           const price = ecomUtils.price(item)
           if (price > 0 && ((enableCategoryProductsOnly && haveCategory) || !enableCategoryProductsOnly)) {
