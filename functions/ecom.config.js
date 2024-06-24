@@ -311,7 +311,7 @@ const app = {
             },
             "category_ids": {
               "title": "Lista de categorias da campanha",
-              "description": "Se preenchido, desconto será ativo se algum produto estiver no carrinho pertence a essa categoria",
+              "description": "Se preenchido, o desconto será aplicado apenas em produtos das categorias selecionadas",
               "type": "array",
               "items": {
                 "type": "string",
