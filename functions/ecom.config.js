@@ -309,12 +309,6 @@ const app = {
               "title": "Desconto por domínio",
               "description": "Caso trabalhe com multilojas, o domínio irá filtrar o desconto pelo domínio"
             },
-            "enable_products_promotion": {
-              "type": "boolean",
-              "default": true,
-              "title": "Habilitar Cupom para produtos em promoção",
-              "description": "Se desabilitado, o cupom não será aplicado caso qualquer item do carrinho esteja em promoção."
-            },
             "category_ids": {
               "title": "Lista de categorias da campanha",
               "description": "Se preenchido, desconto será ativo se algum produto estiver no carrinho pertence a essa categoria",
@@ -324,12 +318,6 @@ const app = {
                 "pattern": "^[a-f0-9]{24}$",
                 "title": "ID da categoria"
               }
-            },
-            "enable_category_products_only": {
-              "type": "boolean",
-              "default": true,
-              "title": "Habilitar somente em produtos da categoria",
-              "description": "Habilitar desconto somente em produtos das categorias da lista"
             }
           }
         }

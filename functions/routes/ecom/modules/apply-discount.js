@@ -260,7 +260,7 @@ exports.post = ({ appSdk, admin }, req, res) => {
           return kitDiscount
         })
       }
-      const kitDiscounts = getValidDiscountRules(storeId, config.product_kit_discounts, params, params.items)
+      const kitDiscounts = getValidDiscountRules(config.product_kit_discounts, params, params.items)
         .sort((a, b) => {
           if (!Array.isArray(a.product_ids) || !a.product_ids.length) {
             if (Array.isArray(b.product_ids) && b.product_ids.length) {
@@ -466,7 +466,7 @@ exports.post = ({ appSdk, admin }, req, res) => {
       }
     })
 
-    const discountRules = getValidDiscountRules(storeId, config.discount_rules, params)
+    const discountRules = getValidDiscountRules(config.discount_rules, params)
     if (discountRules.length) {
       const { discountRule, discountMatchEnum } = matchDiscountRule(discountRules, params)
       if (discountRule) {
@@ -566,7 +566,6 @@ exports.post = ({ appSdk, admin }, req, res) => {
                   discountMatchEnum: secondDiscountMatchEnum
                 } = matchDiscountRule(discountRules, params, discountRule.discount.apply_at || 'total')
                 if (secondDiscountRule) {
-                  console.log('>> second ', JSON.stringify(secondDiscountRule))
                   let checkAmount = params.amount[secondDiscountRule.discount.amount_field || 'total']
                   if (secondDiscountRule.discount.amount_field !== 'freight') checkAmount -= getFreebiesPreview().value
                   if (
@@ -588,7 +587,6 @@ exports.post = ({ appSdk, admin }, req, res) => {
                 openDiscountRule.cumulative_discount !== false &&
                 openDiscountRule.discount.min_amount
               ) {
-                console.log('>> open ', JSON.stringify(openDiscountRule))
                 let checkAmount = params.amount[openDiscountRule.discount.amount_field || 'total']
                 if (checkAmount) {
                   // subtract current discount to validate cumulative open discount min amount

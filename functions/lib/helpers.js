@@ -1,7 +1,6 @@
 'use strict'
 
 const ecomUtils = require('@ecomplus/utils')
-const ecomClient = require('@ecomplus/client')
 
 const validateDateRange = rule => {
   // filter campaings by date
@@ -63,48 +62,11 @@ const checkOpenPromotion = rule => {
     (!Array.isArray(rule.customer_ids) || !rule.customer_ids.length)
 }
 
-const havePromotion = async (storeId, items) => {
-  const skus = items.map(item => item.sku)
-  return await ecomClient.search({
-    storeId,
-    url: '/items.json',
-    data: {
-      size: skus.length,
-      query: {
-        bool: {
-          must: {
-            terms: { skus }
-          }
-        }
-      }
-    }
-  }).then(({ data }) => {
-    let isPromotion = false
-    data?.hits?.hits?.forEach(({ _id, _source }) => {
-      const variation = _source.variations?.find(({ sku }) => skus.includes(sku))
-      let item
-      if (skus.includes(_source.sku)) {
-        item = { _id, ..._source }
-      } else if (variation) {
-        item = { _id, ..._source, sku: variation.sku }
-      }
-      if (item && ecomUtils.onPromotion(item)) {
-        isPromotion = true
-      }
-    })
-    return isPromotion
-  })
-    .catch(() => false)
-}
-
-const getValidDiscountRules = (storeId, discountRules, params, items) => {
+const getValidDiscountRules = (discountRules, params, items) => {
   if (Array.isArray(discountRules) && discountRules.length) {
     // validate rules objects
     return discountRules.filter(rule => {
       if (!rule || !validateCustomerId(rule, params)) {
-        return false
-      }
-      if (rule.enable_products_promotion === false && Array.isArray(params.items) && havePromotion(storeId, params.items)) {
         return false
       }
       if ((Array.isArray(rule.product_ids) || (Array.isArray(rule.category_ids))) && Array.isArray(items)) {
@@ -162,12 +124,11 @@ const getValidDiscountRules = (storeId, discountRules, params, items) => {
         }
       } else if ((Array.isArray(rule.category_ids)) && Array.isArray(params.items)) {
         const categoryIds = rule.category_ids
-        const enableCategoryProductsOnly = rule.enable_category_products_only
         let value = 0
         params.items.forEach(item => {
-          const haveCategory = item.categories?.find(category => categoryIds.includes(category._id))
+          const validCategory = item.categories?.find(category => categoryIds.includes(category._id))
           const price = ecomUtils.price(item)
-          if (price > 0 && ((enableCategoryProductsOnly && haveCategory) || !enableCategoryProductsOnly)) {
+          if (price > 0 && validCategory) {
             value += price * item.quantity
           }
         })
