@@ -132,8 +132,6 @@ const getValidDiscountRules = (discountRules, params, items) => {
             value += price * item.quantity
           }
         })
-
-        console.log('log discount by category', value)
         if (value) {
           if (rule.discount && rule.discount.value) {
             if (rule.discount.type === 'percentage') {
