@@ -139,11 +139,7 @@ const getValidDiscountRules = (discountRules, params, items) => {
             if (rule.discount.type === 'percentage') {
               value *= rule.discount.value / 100
             } else {
-              if (rule.discount_kit_subtotal) {
-                value = rule.discount.value
-              } else {
-                value = Math.min(value, rule.discount.value)
-              }
+              value = Math.min(value, rule.discount.value)
             }
           }
           rule.originalDiscount = rule.discount
