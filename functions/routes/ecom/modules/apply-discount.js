@@ -494,11 +494,6 @@ exports.post = ({ appSdk, admin }, req, res) => {
         }
 
         let { label, discount } = discountRule
-        if (discountRule.category_ids) {
-          discount.category_ids = discountRule.category_ids
-          discount.enable_category_products_only = discountRule.enable_category_products_only
-        }
-
         if (typeof label !== 'string' || !label) {
           label = params.discount_coupon || `DISCOUNT ${discountMatchEnum}`
         }
