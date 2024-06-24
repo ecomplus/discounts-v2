@@ -82,8 +82,8 @@ exports.post = ({ appSdk, admin }, req, res) => {
 
   const getDiscountValue = (discount, maxDiscount) => {
     let value
-    const applyAt = discount.apply_at || 'total'
     if (typeof maxDiscount !== 'number') {
+      const applyAt = discount.apply_at || 'total'
       maxDiscount = params.amount[applyAt]
       if (applyAt === 'total' && response.discount_rule) {
         maxDiscount -= response.discount_rule.extra_discount.value
