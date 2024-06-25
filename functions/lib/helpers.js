@@ -122,7 +122,35 @@ const getValidDiscountRules = (discountRules, params, items) => {
             value
           }
         }
+      } else if ((Array.isArray(rule.category_ids)) && Array.isArray(params.items)) {
+        const categoryIds = rule.category_ids
+        let value = 0
+        params.items.forEach(item => {
+          const validCategory = item.categories?.find(category => categoryIds.includes(category._id))
+          const price = ecomUtils.price(item)
+          if (price > 0 && validCategory) {
+            value += price * item.quantity
+          }
+        })
+        if (value) {
+          if (rule.discount && rule.discount.value) {
+            if (rule.discount.type === 'percentage') {
+              value *= rule.discount.value / 100
+            } else {
+              value = Math.min(value, rule.discount.value)
+            }
+          }
+          rule.originalDiscount = rule.discount
+          rule.discount = {
+            ...rule.discount,
+            type: 'fixed',
+            value
+          }
+        } else {
+          return false
+        }
       }
+
       if (!rule.discount || !rule.discount.value) {
         return false
       }
@@ -150,7 +178,7 @@ const matchDiscountRule = (discountRules, params = {}, skipApplyAt) => {
         const hasDiscountDomain = !rule.domain || (rule.domain === params.domain)
         return rule.case_insensitive
           ? typeof rule.discount_coupon === 'string' &&
-            rule.discount_coupon.toUpperCase() === params.discount_coupon.toUpperCase() && 
+            rule.discount_coupon.toUpperCase() === params.discount_coupon.toUpperCase() &&
             hasDiscountDomain
           : rule.discount_coupon === params.discount_coupon &&
             hasDiscountDomain

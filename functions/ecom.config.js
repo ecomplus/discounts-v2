@@ -308,6 +308,16 @@ const app = {
               "maxLength": 100,
               "title": "Desconto por domínio",
               "description": "Caso trabalhe com multilojas, o domínio irá filtrar o desconto pelo domínio"
+            },
+            "category_ids": {
+              "title": "Lista de categorias da campanha",
+              "description": "Se preenchido, o desconto será aplicado apenas em produtos das categorias selecionadas",
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{24}$",
+                "title": "ID da categoria"
+              }
             }
           }
         }
