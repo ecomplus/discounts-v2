@@ -6,7 +6,7 @@
  */
 
 const app = {
-  app_id: 103285,
+  app_id: 1252,
   title: 'Campanhas e descontos',
   slug: 'discounts',
   type: 'external',
