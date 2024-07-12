@@ -44,17 +44,19 @@ const validateCustomerId = (rule, params) => {
 const matchFreebieRule = (rule, params = {}) => {
   const coupon = params.discount_coupon
   const utm = params.utm && params.utm.campaign
-  const hasDiscountDomain = !rule.domain || (rule.domain === params.domain)
-  if (rule.freebie_coupon && rule.freebie_utm && hasDiscountDomain) {
-    return coupon?.toUpperCase() === rule.freebie_coupon?.toUpperCase() || (utm?.toUpperCase() === rule.freebie_utm?.toUpperCase())
-  } else if (rule.freebie_coupon && hasDiscountDomain) {
-    return coupon?.toUpperCase() === rule.freebie_coupon?.toUpperCase()
-  } else if (rule.freebie_utm && hasDiscountDomain) {
-    return (utm?.toUpperCase() === rule.freebie_utm?.toUpperCase())
-  } else if (rule.domain) {
-    return rule.domain === params.domain
+  if (rule.domain && rule.domain !== params.domain) {
+    return false
   }
-  return true
+  if (rule.freebie_coupon && rule.freebie_utm) {
+    return coupon?.toUpperCase() === rule.freebie_coupon?.toUpperCase() || (utm?.toUpperCase() === rule.freebie_utm?.toUpperCase())
+  }
+  if (rule.freebie_coupon) {
+    return coupon?.toUpperCase() === rule.freebie_coupon?.toUpperCase()
+  }
+  if (rule.freebie_utm) {
+    return (utm?.toUpperCase() === rule.freebie_utm?.toUpperCase())
+  }
+  return !rule.domain || rule.domain === params.domain
 }
 
 const checkOpenPromotion = rule => {
