@@ -124,7 +124,8 @@ const getValidDiscountRules = (discountRules, params, items) => {
             value
           }
         }
-      } else if ((Array.isArray(rule.category_ids)) && Array.isArray(params.items)) {
+      } else if ((Array.isArray(rule.category_ids))) {
+        if (!params.items || !params.items.length) return false
         const categoryIds = rule.category_ids
         let value = 0
         params.items.forEach(item => {
