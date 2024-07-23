@@ -48,24 +48,26 @@ exports.get = async ({ appSdk }, req, res) => {
       .then(auth => getAppData({ appSdk, storeId, auth }))
       .catch(console.error)
 
+    let discountRules
+    let productKitDiscounts
+    let freebiesRules
+
     if (appData) {
-      const {
-        discount_rules: discountRules,
-        product_kit_discounts: productKitDiscounts,
-        freebies_rules: freebiesRules
-      } = appData
+      discountRules = appData.discount_rules
+      productKitDiscounts = appData.product_kit_discounts
+      freebiesRules = appData.freebies_rules
 
       checkCampaign(discountRules, domain)
       checkCampaign(productKitDiscounts, domain)
       checkCampaign(freebiesRules, domain)
-
-      return res.send({
-        domain,
-        discount_rules: discountRules || [],
-        product_kit_discounts: productKitDiscounts || [],
-        freebies_rules: freebiesRules || []
-      })
     }
+
+    return res.send({
+      domain,
+      discount_rules: discountRules || [],
+      product_kit_discounts: productKitDiscounts || [],
+      freebies_rules: freebiesRules || []
+    })
   }
 
   return res.status(400)
