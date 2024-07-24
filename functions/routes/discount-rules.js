@@ -1,20 +1,21 @@
 const getAppData = require('../lib/store-api/get-app-data')
 const { validateDateRange } = require('../lib/helpers')
 
-const isValidRule = (rule, domain) => {
-  const isInvalidRule = Boolean(
-    !validateDateRange(rule) || (rule.domain && rule.domain !== domain) ||
-    (!rule.product_ids?.length && !rule.category_ids?.length && !rule.excluded_product_ids?.length) ||
-    ((rule.utm_campaign || (rule.customer_ids && rule.customer_ids.length) || rule.discount_coupon))
+const checkValidRule = (rule, domain) => {
+  return Boolean(
+    validateDateRange(rule) &&
+      rule.domain === domain &&
+      !rule.utm_campaign &&
+      !rule.customer_ids?.length &&
+      !rule.discount_coupon
   )
-  return !isInvalidRule
 }
 
 exports.get = async ({ appSdk }, req, res) => {
   const storeId = Number(req.query?.store_id || 0)
   const origin = req.headers.origin
   let domain = origin
-  if (!origin || origin?.includes('localhost') || origin?.includes('127.0.0.1')) {
+  if (!origin || origin.includes('localhost') || origin.includes('127.0.0.1')) {
     domain = req.query?.domain
   }
 
@@ -23,7 +24,7 @@ exports.get = async ({ appSdk }, req, res) => {
       .send({ message: 'Parameter "domain" not found' })
   }
 
-  domain = domain.replace(/https?:\/\/|:\d+/g, '')
+  domain = domain.replace(/^(https?:\/\/)?([^:/]+).*/, '$2')
 
   if (storeId > 100) {
     const appData = await appSdk.getAuth(storeId)
@@ -36,9 +37,9 @@ exports.get = async ({ appSdk }, req, res) => {
 
     return res.send({
       domain,
-      discount_rules: discountRules.filter((rule) => isValidRule(rule, domain)),
-      product_kit_discounts: productKitDiscounts.filter((rule) => isValidRule(rule, domain)),
-      freebies_rules: freebiesRules.filter((rule) => isValidRule(rule, domain))
+      discount_rules: discountRules.filter((rule) => checkValidRule(rule, domain)),
+      product_kit_discounts: productKitDiscounts.filter((rule) => checkValidRule(rule, domain)),
+      freebies_rules: freebiesRules.filter((rule) => checkValidRule(rule, domain))
     })
   }
 
