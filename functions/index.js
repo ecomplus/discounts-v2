@@ -16,6 +16,7 @@ const bodyParser = require('body-parser')
 const server = express()
 const router = express.Router()
 const routes = './routes'
+const cors = require('cors')
 
 // enable/disable some E-Com common routes based on configuration
 const { app, procedures } = require('./ecom.config')
@@ -60,6 +61,8 @@ server.use((req, res, next) => {
   // next Express middleware
   next()
 })
+
+server.get('/discount-rules', cors({ origin: true }))
 
 router.get('/', (req, res) => {
   // pretty print application body
