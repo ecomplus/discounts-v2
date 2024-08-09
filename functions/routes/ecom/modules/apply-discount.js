@@ -7,7 +7,7 @@ const {
   getValidDiscountRules,
   matchDiscountRule,
   matchFreebieRule,
-  checkCampaignProducts
+  mapCampaignProducts
 } = require('../../../lib/helpers')
 
 exports.post = ({ appSdk, admin }, req, res) => {
@@ -21,22 +21,30 @@ exports.post = ({ appSdk, admin }, req, res) => {
   // setup response object
   // https://apx-mods.e-com.plus/api/v1/apply_discount/response_schema.json?store_id=100
   const response = {}
+  const discountPerSku = {}
   const respondSuccess = () => {
     if (response.available_extra_discount && !response.available_extra_discount.value) {
       delete response.available_extra_discount
     }
-    if (
-      response.discount_rule &&
-      (!response.discount_rule.extra_discount || !response.discount_rule.extra_discount.value)
-    ) {
-      delete response.discount_rule
+    if (response.discount_rule) {
+      if (!response.discount_rule.extra_discount?.value) {
+        delete response.discount_rule
+      } else if (!response.discount_rule.description && config.describe_discounted_items) {
+        const discountedSkus = Object.keys(discountPerSku)
+        if (discountedSkus.length) {
+          response.discount_rule.description = `
+Descontos por SKU:
+---
+${discountedSkus.map((sku) => `\n${sku}: ${discountPerSku[sku].toFixed(2)}`)}
+`.substring(0, 999)
+        }
+      }
     }
     res.send(response)
   }
 
   const checkUsageLimit = async (discountRule, label) => {
     const { customer } = params
-    console.log('check usage limit', JSON.stringify(discountRule), label, JSON.stringify(customer))
     if (!label) {
       label = discountRule.label
     }
@@ -60,13 +68,11 @@ exports.post = ({ appSdk, admin }, req, res) => {
         query: '',
         max: discountRule.total_usage_limit
       }]
-      console.log('log for usage new user', url, JSON.stringify(usageLimits))
       for (let i = 0; i < usageLimits.length; i++) {
         const { query, max } = usageLimits[i]
         if (max) {
           // send Store API request to list orders with filters
           const { response } = await appSdk.apiRequest(storeId, `${url}${query}`)
-          console.log('response result', response.data)
           const countOrders = response.data.result
             .filter(({ status }) => status !== 'cancelled')
             .length
@@ -126,9 +132,15 @@ exports.post = ({ appSdk, admin }, req, res) => {
           }
         }
       }
-      return true
+      return value
     }
-    return false
+    return null
+  }
+
+  const pointDiscountToSku = (discountValue, sku) => {
+    if (!discountValue || !sku) return
+    if (!discountPerSku[sku]) discountPerSku[sku] = 0
+    discountPerSku[sku] += discountValue
   }
 
   const getFreebiesPreview = () => {
@@ -138,7 +150,7 @@ exports.post = ({ appSdk, admin }, req, res) => {
         const validFreebiesRules = config.freebies_rules.filter(rule => {
           return validateDateRange(rule) &&
             validateCustomerId(rule, params) &&
-            checkCampaignProducts(rule.check_product_ids, params) &&
+            mapCampaignProducts({ product_ids: rule.check_product_ids }, params).valid &&
             Array.isArray(rule.product_ids) &&
             rule.product_ids.length &&
             matchFreebieRule(rule, params)
@@ -419,15 +431,18 @@ exports.post = ({ appSdk, admin }, req, res) => {
                 // apply cumulative discount \o/
                 if (kitDiscount.same_product_quantity) {
                   kitItems.forEach((item, i) => {
-                    addDiscount(
+                    const discountValue = addDiscount(
                       discount,
                       `KIT-${(index + 1)}-${i}`,
                       kitDiscount.label,
                       ecomUtils.price(item) * (item.quantity || 1)
                     )
+                    pointDiscountToSku(discountValue, item.sku)
                   })
                 } else {
-                  addDiscount(discount, `KIT-${(index + 1)}`, kitDiscount.label)
+                  const discountValue = addDiscount(discount, `KIT-${(index + 1)}`, kitDiscount.label)
+                  const discountPerItem = Math.round(discountValue / kitItems.length)
+                  kitItems.forEach((item) => pointDiscountToSku(discountPerItem, item.sku))
                 }
                 discountedItemIds = discountedItemIds.concat(kitItems.map(item => item.product_id))
               }
@@ -470,7 +485,11 @@ exports.post = ({ appSdk, admin }, req, res) => {
     if (discountRules.length) {
       const { discountRule, discountMatchEnum } = matchDiscountRule(discountRules, params)
       if (discountRule) {
-        if (!checkCampaignProducts(discountRule.product_ids, params)) {
+        const {
+          valid: isValidByItems,
+          items: filteredItems
+        } = mapCampaignProducts(discountRule, params)
+        if (!isValidByItems) {
           addFreebies()
           response.invalid_coupon_message = params.lang === 'pt_br'
             ? 'Nenhum produto da promoção está incluído no carrinho'
@@ -547,7 +566,12 @@ exports.post = ({ appSdk, admin }, req, res) => {
           }
 
           // we have a discount to apply \o/
-          if (addDiscount(discountRule.discount, discountMatchEnum)) {
+          const discountValue = addDiscount(discountRule.discount, discountMatchEnum)
+          if (discountValue) {
+            if (filteredItems?.length) {
+              const discountPerItem = Math.round(discountValue / filteredItems.length)
+              filteredItems.forEach((item) => pointDiscountToSku(discountPerItem, item.sku))
+            }
             // add discount label and description if any
             response.discount_rule.label = label
             if (discountRule.description) {

@@ -136,34 +136,6 @@ const getValidDiscountRules = (discountRules, params, itemsForKit) => {
             value
           }
         }
-      } else if ((Array.isArray(rule.category_ids))) {
-        if (!params.items || !params.items.length) return false
-        const categoryIds = rule.category_ids
-        let value = 0
-        params.items.forEach(item => {
-          const validCategory = item.categories?.find(category => categoryIds.includes(category._id))
-          const price = ecomUtils.price(item)
-          if (price > 0 && validCategory) {
-            value += (price * item.quantity)
-          }
-        })
-        if (value) {
-          if (rule.discount && rule.discount.value) {
-            if (rule.discount.type === 'percentage') {
-              value *= rule.discount.value / 100
-            } else {
-              value = Math.min(value, rule.discount.value)
-            }
-          }
-          rule.originalDiscount = rule.discount
-          rule.discount = {
-            ...rule.discount,
-            type: 'fixed',
-            value
-          }
-        } else {
-          return false
-        }
       }
       if (!rule.discount || !rule.discount.value) {
         return false
@@ -242,23 +214,40 @@ const matchDiscountRule = (discountRules, params = {}, skipApplyAt) => {
   }
 }
 
-const checkCampaignProducts = (campaignProducts, params) => {
-  if (Array.isArray(campaignProducts) && campaignProducts.length) {
-    // must check at least one campaign product on cart
-    let hasProductMatch
-    if (params.items && params.items.length) {
-      for (let i = 0; i < campaignProducts.length; i++) {
-        if (params.items.find(item => item.quantity && item.product_id === campaignProducts[i])) {
-          hasProductMatch = true
-          break
+const mapCampaignProducts = (rule, params) => {
+  if (Array.isArray(rule.product_ids) && rule.product_ids.length) {
+    const items = params.items?.filter((item) => {
+      return item.quantity && rule.product_ids.includes(item.product_id)
+    }) || []
+    return { valid: items.length, items }
+  }
+  if (Array.isArray(rule.category_ids) && rule.category_ids.length) {
+    let discountValue = 0
+    const items = params.items?.filter((item) => {
+      const isValidItem = item.quantity && item.categories?.some(category => {
+        return rule.category_ids.includes(category._id)
+      })
+      if (isValidItem) {
+        const price = ecomUtils.price(item)
+        if (price > 0) {
+          discountValue += (price * item.quantity)
         }
       }
+      return isValidItem
+    }) || []
+    // direct "fix" rule discount value limiting by category items
+    if (rule.discount?.value) {
+      if (rule.discount.type === 'percentage') {
+        discountValue *= rule.discount.value / 100
+      } else {
+        discountValue = Math.min(discountValue, rule.discount.value)
+      }
+      rule.discount.type = 'fixed'
+      rule.discount.value = discountValue
     }
-    if (!hasProductMatch) {
-      return false
-    }
+    return { valid: items.length, items }
   }
-  return true
+  return { valid: true, items: [] }
 }
 
 module.exports = {
@@ -268,5 +257,5 @@ module.exports = {
   getValidDiscountRules,
   matchDiscountRule,
   matchFreebieRule,
-  checkCampaignProducts
+  mapCampaignProducts
 }
