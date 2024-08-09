@@ -20,7 +20,7 @@ exports.post = async ({ appSdk }, req, res) => {
     return res.send({ items })
   }
   if (!extraDiscount.app?.description) {
-    const discountMultiplier = extraDiscount.value / amount.subtotal
+    const discountMultiplier = 1 - extraDiscount.value / amount.subtotal
     return res.send({
       items: items.map((item) => ({
         ...item,
