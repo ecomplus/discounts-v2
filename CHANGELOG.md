@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.22.0](https://github.com/ecomplus/application-starter/compare/v2.21.0...v2.22.0) (2024-08-09)
+
+
+### Features
+
+* additional endpoint to parse order and return items with per sku discounted prices ([dcf8565](https://github.com/ecomplus/application-starter/commit/dcf856537b23db80931b94e64a8b1b393ffc55a3))
+* additional endpoint to read public discounts by domain ([#22](https://github.com/ecomplus/application-starter/issues/22)) ([141bed6](https://github.com/ecomplus/application-starter/commit/141bed68b62ad6b6869dfefeff7ed17af632113b))
+* handle new config option `describe_discounted_items` ([f6a90c5](https://github.com/ecomplus/application-starter/commit/f6a90c58279c8a4140f9ab36e692aa412f48a165))
+* support discount coupons with category filter ([#19](https://github.com/ecomplus/application-starter/issues/19)) ([a6109e4](https://github.com/ecomplus/application-starter/commit/a6109e4c6c0a8520d8fa78ac9ce7a16fc24c5d31)), closes [#17](https://github.com/ecomplus/application-starter/issues/17)
+
+
+### Bug Fixes
+
+* **deps:** update all non-major ([424c7f8](https://github.com/ecomplus/application-starter/commit/424c7f873e772fcd9803006419a1d25d3e346dcb))
+* **deps:** update all non-major ([a21c4ab](https://github.com/ecomplus/application-starter/commit/a21c4aba7eabad573d4971c918fa900ad3044841))
+* **deps:** update all non-major ([1684966](https://github.com/ecomplus/application-starter/commit/16849668940f055f6cb980cebbc58a409bb46c12))
+* invalidate discount rule with category filters when no items set ([#21](https://github.com/ecomplus/application-starter/issues/21)) ([2a2264a](https://github.com/ecomplus/application-starter/commit/2a2264a37e352108f74c522331142d5e9c4b3375))
+* removing unecessary logs and min quantity check on rules filter ([9fa6467](https://github.com/ecomplus/application-starter/commit/9fa6467ceb72ee76e99a9968175d4c251b3f5f28))
+* revert to "old" discounts app id ([05ee171](https://github.com/ecomplus/application-starter/commit/05ee171122564ef8b8e0ffb6e3b63777a0b1c234))
+
 ## 2.21.0 (2024-01-16)
 
 
