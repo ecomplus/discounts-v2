@@ -142,6 +142,17 @@ ${discountedSkus.map((sku) => `\n${sku}: ${discountPerSku[sku].toFixed(2)}`)}
     if (!discountPerSku[sku]) discountPerSku[sku] = 0
     discountPerSku[sku] += discountValue
   }
+  const pointDiscountToEachItem = (discountValue, filteredItems) => {
+    const itemsAmount = filteredItems.reduce(
+      (amount, item) => amount + (ecomUtils.price(item) * (item.quantity || 1)),
+      0
+    )
+    const discountMultiplier = discountValue / itemsAmount
+    filteredItems.forEach((item) => {
+      const discountPerItem = discountMultiplier * (ecomUtils.price(item) * (item.quantity || 1))
+      return pointDiscountToSku(discountPerItem, item.sku)
+    })
+  }
 
   const getFreebiesPreview = () => {
     if (params.items && params.items.length) {
@@ -441,8 +452,7 @@ ${discountedSkus.map((sku) => `\n${sku}: ${discountPerSku[sku].toFixed(2)}`)}
                   })
                 } else {
                   const discountValue = addDiscount(discount, `KIT-${(index + 1)}`, kitDiscount.label)
-                  const discountPerItem = discountValue / kitItems.length
-                  kitItems.forEach((item) => pointDiscountToSku(discountPerItem, item.sku))
+                  pointDiscountToEachItem(discountValue, kitItems)
                 }
                 discountedItemIds = discountedItemIds.concat(kitItems.map(item => item.product_id))
               }
@@ -569,8 +579,7 @@ ${discountedSkus.map((sku) => `\n${sku}: ${discountPerSku[sku].toFixed(2)}`)}
           const discountValue = addDiscount(discountRule.discount, discountMatchEnum)
           if (discountValue) {
             if (filteredItems?.length) {
-              const discountPerItem = discountValue / filteredItems.length
-              filteredItems.forEach((item) => pointDiscountToSku(discountPerItem, item.sku))
+              pointDiscountToEachItem(discountValue, filteredItems)
             }
             // add discount label and description if any
             response.discount_rule.label = label
