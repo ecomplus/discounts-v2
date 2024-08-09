@@ -64,16 +64,26 @@ const checkOpenPromotion = rule => {
     (!Array.isArray(rule.customer_ids) || !rule.customer_ids.length)
 }
 
-const getValidDiscountRules = (discountRules, params, items) => {
+const getValidDiscountRules = (discountRules, params, itemsForKit) => {
   if (Array.isArray(discountRules) && discountRules.length) {
     // validate rules objects
     return discountRules.filter(rule => {
       if (!rule || !validateCustomerId(rule, params)) {
         return false
       }
-      if ((Array.isArray(rule.product_ids) || (Array.isArray(rule.category_ids))) && Array.isArray(items)) {
+      if (rule.domain && rule.domain !== params.domain) {
+        return false
+      }
+      if (
+        Array.isArray(itemsForKit) &&
+        (Array.isArray(rule.product_ids) || (Array.isArray(rule.category_ids)))
+      ) {
         const checkProductId = item => {
-          if (!(rule.product_ids && rule.product_ids.length) && Array.isArray(rule.category_ids) && rule.category_ids.length) {
+          if (
+            !(rule.product_ids && rule.product_ids.length) &&
+            Array.isArray(rule.category_ids) &&
+            rule.category_ids.length
+          ) {
             if (Array.isArray(item.categories)) {
               for (let i = 0; i < item.categories.length; i++) {
                 const category = item.categories[i]
@@ -84,12 +94,15 @@ const getValidDiscountRules = (discountRules, params, items) => {
             }
             return false
           }
-          return (!(rule.product_ids && rule.product_ids.length) || rule.product_ids.indexOf(item.product_id) > -1)
+          return (
+            !(rule.product_ids && rule.product_ids.length) ||
+            rule.product_ids.indexOf(item.product_id) > -1
+          )
         }
         // set/add discount value from lowest item price
         let value
         if (rule.discount_lowest_price) {
-          items.forEach(item => {
+          itemsForKit.forEach(item => {
             const price = ecomUtils.price(item)
             if (price > 0 && checkProductId(item) && (!value || value > price)) {
               value = price
@@ -97,14 +110,13 @@ const getValidDiscountRules = (discountRules, params, items) => {
           })
         } else if (rule.discount_kit_subtotal) {
           value = 0
-          items.forEach(item => {
+          itemsForKit.forEach(item => {
             const price = ecomUtils.price(item)
             if (price > 0 && checkProductId(item)) {
               value += price * item.quantity
             }
           })
         }
-        console.log('log for buy together', value)
         if (value) {
           if (rule.discount && rule.discount.value) {
             if (rule.discount.type === 'percentage') {
@@ -132,7 +144,7 @@ const getValidDiscountRules = (discountRules, params, items) => {
           const validCategory = item.categories?.find(category => categoryIds.includes(category._id))
           const price = ecomUtils.price(item)
           if (price > 0 && validCategory) {
-            value += price * item.quantity
+            value += (price * item.quantity)
           }
         })
         if (value) {
@@ -153,15 +165,12 @@ const getValidDiscountRules = (discountRules, params, items) => {
           return false
         }
       }
-
       if (!rule.discount || !rule.discount.value) {
         return false
       }
-
       return validateDateRange(rule)
     })
   }
-
   // returns array anyway
   return []
 }
@@ -178,28 +187,21 @@ const matchDiscountRule = (discountRules, params = {}, skipApplyAt) => {
     // match only by discount coupon
     return {
       discountRule: filteredRules.find(rule => {
-        const hasDiscountDomain = !rule.domain || (rule.domain === params.domain)
         return rule.case_insensitive
           ? typeof rule.discount_coupon === 'string' &&
-            rule.discount_coupon.toUpperCase() === params.discount_coupon.toUpperCase() &&
-            hasDiscountDomain
-          : rule.discount_coupon === params.discount_coupon &&
-            hasDiscountDomain
+            rule.discount_coupon.toUpperCase() === params.discount_coupon.toUpperCase()
+          : rule.discount_coupon === params.discount_coupon
       }),
       discountMatchEnum: 'COUPON'
     }
   }
-
   // try to match by UTM campaign first
   if (params.utm && params.utm.campaign) {
     const discountRule = filteredRules.find(rule => {
-      const hasDiscountDomain = !rule.domain || (rule.domain === params.domain)
       return rule.case_insensitive
         ? typeof rule.utm_campaign === 'string' &&
-          rule.utm_campaign.toUpperCase() === params.utm.campaign.toUpperCase() &&
-          hasDiscountDomain
-        : rule.utm_campaign === params.utm.campaign &&
-          hasDiscountDomain
+          rule.utm_campaign.toUpperCase() === params.utm.campaign.toUpperCase()
+        : rule.utm_campaign === params.utm.campaign
     })
     if (discountRule) {
       return {
@@ -208,14 +210,11 @@ const matchDiscountRule = (discountRules, params = {}, skipApplyAt) => {
       }
     }
   }
-
   // then try to match by customer
   if (params.customer && params.customer._id) {
     const discountRule = filteredRules.find(rule => {
-      const hasDiscountDomain = !rule.domain || (rule.domain === params.domain)
       return Array.isArray(rule.customer_ids) &&
-      rule.customer_ids.indexOf(params.customer._id) > -1 &&
-      hasDiscountDomain
+      rule.customer_ids.indexOf(params.customer._id) > -1
     })
     if (discountRule) {
       return {
@@ -224,7 +223,6 @@ const matchDiscountRule = (discountRules, params = {}, skipApplyAt) => {
       }
     }
   }
-
   // then try to match by domain
   if (params.domain) {
     const discountRule = filteredRules.find(rule => {
@@ -233,11 +231,10 @@ const matchDiscountRule = (discountRules, params = {}, skipApplyAt) => {
     if (discountRule) {
       return {
         discountRule,
-        discountMatchEnum: 'STORE_DOMAIN'
+        discountMatchEnum: 'DOMAIN'
       }
     }
   }
-
   // last try to match by open promotions
   return {
     discountRule: filteredRules.find(checkOpenPromotion),
