@@ -1,9 +1,5 @@
 const ecomUtils = require('@ecomplus/utils')
 
-const getDiscountedPrice = (item, discountMultiplier) => {
-  return parseInt(ecomUtils.price(item) * discountMultiplier * 100, 10) / 100
-}
-
 exports.post = async ({ appSdk }, req, res) => {
   const storeId = Number(req.query?.store_id)
   if (!(storeId > 100)) {
@@ -28,7 +24,7 @@ exports.post = async ({ appSdk }, req, res) => {
     return res.send({
       items: items.map((item) => ({
         ...item,
-        final_price: getDiscountedPrice(item, discountMultiplier)
+        final_price: parseInt(ecomUtils.price(item) * discountMultiplier * 100, 10) / 100
       }))
     })
   }
@@ -44,10 +40,10 @@ exports.post = async ({ appSdk }, req, res) => {
       if (item.sku === sku && item.quantity) skuQnt += item.quantity
     })
     if (skuQnt) {
-      const discountMultiplier = Number(discountStr) / skuQnt
+      const unitDiscount = Number(discountStr) / skuQnt
       items.forEach((item) => {
         if (item.sku === sku) {
-          item.final_price = getDiscountedPrice(item, discountMultiplier)
+          item.final_price = parseInt((ecomUtils.price(item) - unitDiscount) * 100, 10) / 100
         }
       })
     }
