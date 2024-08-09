@@ -441,7 +441,7 @@ ${discountedSkus.map((sku) => `\n${sku}: ${discountPerSku[sku].toFixed(2)}`)}
                   })
                 } else {
                   const discountValue = addDiscount(discount, `KIT-${(index + 1)}`, kitDiscount.label)
-                  const discountPerItem = Math.round(discountValue / kitItems.length)
+                  const discountPerItem = discountValue / kitItems.length
                   kitItems.forEach((item) => pointDiscountToSku(discountPerItem, item.sku))
                 }
                 discountedItemIds = discountedItemIds.concat(kitItems.map(item => item.product_id))
@@ -569,7 +569,7 @@ ${discountedSkus.map((sku) => `\n${sku}: ${discountPerSku[sku].toFixed(2)}`)}
           const discountValue = addDiscount(discountRule.discount, discountMatchEnum)
           if (discountValue) {
             if (filteredItems?.length) {
-              const discountPerItem = Math.round(discountValue / filteredItems.length)
+              const discountPerItem = discountValue / filteredItems.length
               filteredItems.forEach((item) => pointDiscountToSku(discountPerItem, item.sku))
             }
             // add discount label and description if any
