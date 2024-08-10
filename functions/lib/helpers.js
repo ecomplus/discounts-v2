@@ -147,7 +147,13 @@ const getValidDiscountRules = (discountRules, params, itemsForKit) => {
   return []
 }
 
-const matchDiscountRule = (discountRules, params = {}, skipApplyAt) => {
+const matchDiscountRule = (_discountRules, params = {}, skipApplyAt) => {
+  const validItemsDiscountRules = _discountRules.filter((rule) => {
+    return mapCampaignProducts(rule, params).valid
+  })
+  const discountRules = validItemsDiscountRules.length
+    ? validItemsDiscountRules
+    : _discountRules
   const filteredRules = skipApplyAt
     ? discountRules.filter((rule) => {
       const applyAt = (rule.discount && rule.discount.apply_at) || 'total'
