@@ -72,7 +72,9 @@ const getValidDiscountRules = (discountRules, params, itemsForKit) => {
         return false
       }
       if (rule.domain && rule.domain !== params.domain) {
-        return false
+        if (!checkOpenPromotion(rule) || params.domain) {
+          return false
+        }
       }
       if (
         Array.isArray(itemsForKit) &&
