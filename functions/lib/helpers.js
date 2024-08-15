@@ -45,7 +45,9 @@ const matchFreebieRule = (rule, params = {}) => {
   const coupon = params.discount_coupon
   const utm = params.utm && params.utm.campaign
   if (rule.domain && rule.domain !== params.domain) {
-    return false
+    if (params.domain !== `${rule.domain}.skip-open`) {
+      return false
+    }
   }
   if (rule.freebie_coupon && rule.freebie_utm) {
     return coupon?.toUpperCase() === rule.freebie_coupon?.toUpperCase() || (utm?.toUpperCase() === rule.freebie_utm?.toUpperCase())
@@ -56,7 +58,7 @@ const matchFreebieRule = (rule, params = {}) => {
   if (rule.freebie_utm) {
     return (utm?.toUpperCase() === rule.freebie_utm?.toUpperCase())
   }
-  return !rule.domain || rule.domain === params.domain
+  return true
 }
 
 const checkOpenPromotion = rule => {
@@ -72,7 +74,9 @@ const getValidDiscountRules = (discountRules, params, itemsForKit) => {
         return false
       }
       if (rule.domain && rule.domain !== params.domain) {
-        if (checkOpenPromotion(rule) || params.domain) {
+        if (params.domain === `${rule.domain}.skip-open`) {
+          if (checkOpenPromotion(rule)) return false
+        } else {
           return false
         }
       }
@@ -206,7 +210,7 @@ const matchDiscountRule = (_discountRules, params = {}, skipApplyAt) => {
   // then try to match by domain
   if (params.domain) {
     const discountRule = filteredRules.find(rule => {
-      return rule.domain === params.domain
+      return rule.domain === params.domain || params.domain === `${rule.domain}.skip-open`
     })
     if (discountRule) {
       return {
