@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.22.1](https://github.com/ecomplus/application-starter/compare/v2.22.0...v2.22.1) (2024-08-19)
+
+
+### Bug Fixes
+
+* better calculating discount per item for extra discount description ([aa59676](https://github.com/ecomplus/application-starter/commit/aa59676e300d9cead83325156d6bc2ef6b649a59))
+* deal with custom `.skip-open` prefix on domain param ([92ab508](https://github.com/ecomplus/application-starter/commit/92ab5086403acd149af823ccf59a54cf2c43b76c))
+* pass discoutns by coupon or utm with filter by domain when no domain passed ([5c606ce](https://github.com/ecomplus/application-starter/commit/5c606ce3742b0de8dc911cf046da103d2512044f))
+* pass discoutns by coupon or utm with filter by domain when no domain passed (!) ([88ca51d](https://github.com/ecomplus/application-starter/commit/88ca51d16e17124bac607ed5102725530163e5ad))
+* prefer matching discount rule with validated items when some are not ([3465eb3](https://github.com/ecomplus/application-starter/commit/3465eb393b8d7769d07ac6edf21cba92a7ccb442))
+* properly calculating discounted prices for all items without "sku: discount" description ([5a40927](https://github.com/ecomplus/application-starter/commit/5a4092714bb3f218123af27c3e0518d1579158b1))
+* properly discounted prices from sku discounts on `app.description` lines ([8e24eba](https://github.com/ecomplus/application-starter/commit/8e24eba37b34cbce1b981629bd4f204e5c69d384))
+
 ## [2.22.0](https://github.com/ecomplus/application-starter/compare/v2.21.0...v2.22.0) (2024-08-09)
 
 
