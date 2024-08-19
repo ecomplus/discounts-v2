@@ -17,6 +17,9 @@ exports.post = ({ appSdk, admin }, req, res) => {
   const { params, application } = req.body
   // app configured options
   const config = Object.assign({}, application.data, application.hidden_data)
+  if (config.advanced && typeof config.advanced === 'object') {
+    Object.assign(config, config.advanced)
+  }
 
   // setup response object
   // https://apx-mods.e-com.plus/api/v1/apply_discount/response_schema.json?store_id=100

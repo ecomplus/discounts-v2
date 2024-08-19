@@ -599,12 +599,19 @@ const app = {
       },
       "hide": false
     },
-    "describe_discounted_items": {
+    "advanced": {
       "schema": {
-        "type": "boolean",
-        "default": false,
-        "title": "Descrever itens descontados",
-        "description": "Descrição adicional do desconto em cada SKU, se filtrado pela regra de desconto"
+        "type": "object",
+        "title": "Opções adicionais",
+        "additionalProperties": false,
+        "properties": {
+          "describe_discounted_items": {
+            "type": "boolean",
+            "default": false,
+            "title": "Descrever itens descontados",
+            "description": "Descrição adicional do desconto em cada SKU, se filtrado pela regra de desconto"
+          }
+        }
       },
       "hide": false
     }
