@@ -301,7 +301,7 @@ const app = {
               "type": "boolean",
               "default": true,
               "title": "Desconto cumulativo",
-              "description": "Se a promoção poderá ser aplicada junto a descontos de pagamento/entrega"
+              "description": "Se a promoção poderá ser aplicada junto a outra regra ou descontos de pagamento"
             },
             "domain": {
               "type": "string",

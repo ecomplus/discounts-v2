@@ -561,7 +561,7 @@ ${discountedSkus.map((sku) => `\n${sku}: ${discountPerSku[sku].toFixed(2)}`)}
             (response.discount_rule || params.amount.discount)
           ) {
             if (
-              response.discount_rule.extra_discount &&
+              response.discount_rule?.extra_discount &&
               !params.amount.discount &&
               getDiscountValue(discount) > response.discount_rule.extra_discount.value
             ) {
