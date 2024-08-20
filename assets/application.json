@@ -495,16 +495,23 @@
       },
       "hide": false
     },
-    "describe_discounted_items": {
+    "advanced": {
       "schema": {
-        "type": "boolean",
-        "default": false,
-        "title": "Descrever itens descontados",
-        "description": "Descrição adicional do desconto em cada SKU, se filtrado pela regra de desconto"
+        "type": "object",
+        "title": "Opções adicionais",
+        "additionalProperties": false,
+        "properties": {
+          "describe_discounted_items": {
+            "type": "boolean",
+            "default": false,
+            "title": "Descrever itens descontados",
+            "description": "Descrição adicional do desconto em cada SKU, se filtrado pela regra de desconto"
+          }
+        }
       },
       "hide": false
     }
   },
   "auth_callback_uri": "https://us-central1-ecom-discounts2.cloudfunctions.net/app/ecom/auth-callback",
-  "version": "2.22.0"
+  "version": "2.22.1"
 }
