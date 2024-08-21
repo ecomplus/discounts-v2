@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.22.2](https://github.com/ecomplus/application-starter/compare/v2.22.1...v2.22.2) (2024-08-21)
+
+
+### Bug Fixes
+
+* prevent error with non-cumulative discount and discounted payment method ([6898212](https://github.com/ecomplus/application-starter/commit/6898212a5d9f22cbe5c34944db8881d4264f4b5f))
+
 ### [2.22.1](https://github.com/ecomplus/application-starter/compare/v2.22.0...v2.22.1) (2024-08-19)
 
 
