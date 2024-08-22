@@ -74,10 +74,10 @@ const getValidDiscountRules = (discountRules, params, itemsForKit) => {
         return false
       }
       const isKitDiscount = Array.isArray(itemsForKit) &&
-        (Array.isArray(rule.product_ids) || (Array.isArray(rule.category_ids)))
+        (Array.isArray(rule.product_ids) || Array.isArray(rule.category_ids))
       if (rule.domain && rule.domain !== params.domain) {
         if (params.domain === `${rule.domain}.skip-open`) {
-          if (isKitDiscount || checkOpenPromotion(rule)) return false
+          if (!isKitDiscount && checkOpenPromotion(rule)) return false
         } else {
           return false
         }
