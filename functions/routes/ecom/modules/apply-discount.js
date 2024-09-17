@@ -266,10 +266,12 @@ ${discountedSkus.map((sku) => `\n${sku}: ${discountPerSku[sku].toFixed(2)}`)}
   const addFreebies = () => {
     const { value, label } = getFreebiesPreview()
     if (value) {
+      const maxDiscount = Math.min(value, params.amount.total || 0)
       addDiscount(
         { type: 'fixed', value },
         'FREEBIES',
-        label
+        label,
+        maxDiscount
       )
     }
   }
