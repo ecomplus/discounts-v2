@@ -369,8 +369,8 @@ ${discountedSkus.map((sku) => `\n${sku}: ${discountPerSku[sku].toFixed(2)}`)}
                 buyTogether.push({
                   products: buyTogetherProducts,
                   discount: {
-                    type: kitDiscount.originalDiscount.type || kitDiscount.discount.type,
-                    value: kitDiscount.originalDiscount.value || kitDiscount.discount.value
+                    type: kitDiscount.originalDiscount?.type || kitDiscount.discount.type,
+                    value: kitDiscount.originalDiscount?.value || kitDiscount.discount.value
                   }
                 })
               }
