@@ -225,10 +225,13 @@ ${discountedSkus.map((sku) => `\n${sku}: ${discountPerSku[sku].toFixed(2)}`)}
               if (!(rule.min_subtotal > fixedSubtotal)) {
                 bestRule = rule
                 discountValue = value
-              } else if (!discountValue && fixedSubtotal >= rule.min_subtotal) {
+              }
+              /*
+              else if (!discountValue && fixedSubtotal >= rule.min_subtotal) {
                 // discount not applicable yet but additional freebies are available
                 bestRule = rule
               }
+              */
             }
           }
 
