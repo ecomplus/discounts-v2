@@ -232,7 +232,7 @@ ${discountedSkus.map((sku) => `\n${sku}: ${discountPerSku[sku].toFixed(2)}`)}
             }
           }
 
-          if (bestRule && discountValue) {
+          if (bestRule) {
             // provide freebie products \o/
             response.freebie_product_ids = bestRule.product_ids
             if (discountValue) {
