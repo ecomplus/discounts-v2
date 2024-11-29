@@ -126,7 +126,7 @@ const getValidDiscountRules = (discountRules, params, itemsForKit) => {
               return item.quantity + acc
             }, 0)
             if (totalQuantity > rule.min_quantity) {
-              value *= (totalQuantity / rule.min_quantity)
+              value *= (rule.min_quantity / totalQuantity)
             }
           }
         }
