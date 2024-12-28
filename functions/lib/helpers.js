@@ -217,7 +217,10 @@ const matchDiscountRule = (_discountRules, params = {}, skipApplyAt) => {
   // then try to match by domain
   if (params.domain) {
     const discountRule = filteredRules.find(rule => {
-      return rule.domain === params.domain || params.domain === `${rule.domain}.skip-open`
+      if (rule.domain === params.domain || params.domain === `${rule.domain}.skip-open`) {
+        return !rule.discount_coupon && !rule.utm_campaign && !rule.customer_ids?.length
+      }
+      return false
     })
     if (discountRule) {
       return {
