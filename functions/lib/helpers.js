@@ -115,16 +115,15 @@ const getValidDiscountRules = (discountRules, params, itemsForKit) => {
           })
         } else if (rule.discount_kit_subtotal) {
           value = 0
+          let totalQuantity = 0
           itemsForKit.forEach(item => {
             const price = ecomUtils.price(item)
             if (price > 0 && checkProductId(item)) {
               value += price * item.quantity
+              totalQuantity += item.quantity
             }
           })
           if (rule.min_quantity > 1) {
-            const totalQuantity = itemsForKit.reduce((acc, item) => {
-              return item.quantity + acc
-            }, 0)
             if (totalQuantity > rule.min_quantity) {
               value *= (rule.min_quantity / totalQuantity)
             }
