@@ -23,7 +23,7 @@ exports.post = ({ appSdk, admin }, req, res) => {
 
   // setup response object
   // https://apx-mods.e-com.plus/api/v1/apply_discount/response_schema.json?store_id=100
-  const response = {}
+  const response = { _cf: 1 }
   const discountPerSku = {}
   const respondSuccess = () => {
     if (response.available_extra_discount && !response.available_extra_discount.value) {
