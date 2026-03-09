@@ -498,8 +498,21 @@ ${discountedSkus.map((sku) => `\n${sku}: ${discountPerSku[sku].toFixed(2)}`)}
 
     const discountRules = getValidDiscountRules(config.discount_rules, params)
     if (discountRules.length) {
-      const { discountRule, discountMatchEnum } = matchDiscountRule(discountRules, params)
+      let { discountRule, discountMatchEnum } = matchDiscountRule(discountRules, params)
       if (discountRule) {
+        // If primary is a freight open promotion but freight=0 (shipping not yet selected),
+        // prefer a non-freight primary so subtotal discounts can still be applied
+        if (
+          checkOpenPromotion(discountRule) &&
+          discountRule.discount.apply_at === 'freight' &&
+          !params.amount?.freight
+        ) {
+          const { discountRule: altRule, discountMatchEnum: altEnum } = matchDiscountRule(discountRules, params, 'freight')
+          if (altRule) {
+            discountRule = altRule
+            discountMatchEnum = altEnum
+          }
+        }
         const {
           valid: isValidByItems,
           items: filteredItems
