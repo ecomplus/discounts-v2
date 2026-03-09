@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.22.3](https://github.com/ecomplus/application-starter/compare/v2.22.2...v2.22.3) (2026-03-09)
+
+
+### Bug Fixes
+
+* adding constant to response to assure latest version use ([ce61781](https://github.com/ecomplus/application-starter/commit/ce61781e2a7a9033278756020c50b594a645b3e6))
+* deal with custom `.skip-open` prefix on domain param also for kit discounts ([89a4021](https://github.com/ecomplus/application-starter/commit/89a4021204fe5199a5d8a7b7378772ab88655f3f))
+* deal with custom `.skip-open` prefix on domain param also for kit discounts (!) ([2165d5d](https://github.com/ecomplus/application-starter/commit/2165d5d14b5a771e3b77a51b7bb6ff69c8825e79))
+* **deps:** update all non-major ([09fa483](https://github.com/ecomplus/application-starter/commit/09fa483448532941d1d2e6f71c2b60a24ded5585))
+* **deps:** update all non-major ([#29](https://github.com/ecomplus/application-starter/issues/29)) ([d34b0cf](https://github.com/ecomplus/application-starter/commit/d34b0cf715e9fb6c05bf83ab847a1f5b1f6b8997))
+* **deps:** update all non-major ([#40](https://github.com/ecomplus/application-starter/issues/40)) ([74cbf29](https://github.com/ecomplus/application-starter/commit/74cbf29de561dd4703abb1e5ffbf5a19fee5aa55))
+* **deps:** update dependency @google-cloud/firestore to ^7.11.1 ([#39](https://github.com/ecomplus/application-starter/issues/39)) ([ddff14b](https://github.com/ecomplus/application-starter/commit/ddff14b3ce4a44fdad17642e34dd38c615c913a9))
+* **deps:** update dependency @google-cloud/firestore to ^7.11.3 ([#42](https://github.com/ecomplus/application-starter/issues/42)) ([cc211e6](https://github.com/ecomplus/application-starter/commit/cc211e60af19965df654d1ed879499bd3189a1a4))
+* **deps:** update dependency @google-cloud/firestore to ^7.11.6 ([#44](https://github.com/ecomplus/application-starter/issues/44)) ([ab2c9c5](https://github.com/ecomplus/application-starter/commit/ab2c9c5a5e5992730c364773ea50e93b01a7df2b))
+* **deps:** update dependency dotenv to ^16.5.0 ([#38](https://github.com/ecomplus/application-starter/issues/38)) ([a5542e5](https://github.com/ecomplus/application-starter/commit/a5542e555ba935ab9faa9bdc1e226481f6ae60a1))
+* **deps:** update dependency express to ^4.21.1 ([e6a8332](https://github.com/ecomplus/application-starter/commit/e6a8332f1552af25c7e682c98ab98e5c11c406ea))
+* **deps:** update dependency express to ^4.22.1 ([#51](https://github.com/ecomplus/application-starter/issues/51)) ([19268a4](https://github.com/ecomplus/application-starter/commit/19268a42306fd08f7d16b0bd1a16aaa9cc19942d))
+* fix handling discount on kit subtotal only with specified quantity ([1a74a7d](https://github.com/ecomplus/application-starter/commit/1a74a7dbf02748785824cc7850b336c6c4ba6b12))
+* prevent discount by domain + counpon auto applied with no coupon ([aab0ef4](https://github.com/ecomplus/application-starter/commit/aab0ef4e912b3ddd3235c6f42dff889d0391e355))
+* prevent priced freebies discount mismatch with wrong max discount check ([85b57cb](https://github.com/ecomplus/application-starter/commit/85b57cb4ccd10998fead4aa778f17c14f657eb8e))
+* preventing error with buy together without manipulated discount object ([2dd590b](https://github.com/ecomplus/application-starter/commit/2dd590b95a9367955139d1e4388a6aaca0ba3676))
+* properly applying kit discounts on subtotal with proportional quantity ([837fa29](https://github.com/ecomplus/application-starter/commit/837fa29c4e9bdd6243519537ddda3c41f8ae3ed1))
+* properly applying kit discounts on subtotal with proportional quantity ([318f093](https://github.com/ecomplus/application-starter/commit/318f09361fe031af9422f33eed4a0bb37624567a))
+* revert temp test for freebie rules with coupon required ([5215508](https://github.com/ecomplus/application-starter/commit/52155080bd2533ab33bb543f298b6fb6eee494a6))
+* stack open promotions correctly with coupon/UTM and open promotion primaries ([4a2f519](https://github.com/ecomplus/application-starter/commit/4a2f519841c15d14116a5d885f13146e85145271))
+* stack open promotions correctly with coupon/UTM primary discounts ([adcb9a8](https://github.com/ecomplus/application-starter/commit/adcb9a8ba0d5e17ed018c2bbb6eef03a08418ed2))
+
 ### [2.22.2](https://github.com/ecomplus/application-starter/compare/v2.22.1...v2.22.2) (2024-08-21)
 
 
