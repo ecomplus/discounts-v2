@@ -591,30 +591,42 @@ ${discountedSkus.map((sku) => `\n${sku}: ${discountPerSku[sku].toFixed(2)}`)}
             if (discountRule.description) {
               response.discount_rule.description = discountRule.description
             }
-            if (!checkOpenPromotion(discountRule)) {
-              if (discountRule.cumulative_discount !== false) {
-                // check for additional same-rule discount on different amount
-                const {
-                  discountRule: secondDiscountRule,
-                  discountMatchEnum: secondDiscountMatchEnum
-                } = matchDiscountRule(discountRules, params, discountRule.discount.apply_at || 'total')
-                if (secondDiscountRule) {
-                  let checkAmount = params.amount[secondDiscountRule.discount.amount_field || 'total']
-                  if (secondDiscountRule.discount.amount_field !== 'freight') checkAmount -= getFreebiesPreview().value
-                  if (
-                    secondDiscountRule.cumulative_discount !== false &&
-                    !(secondDiscountRule.discount.min_amount > checkAmount)
-                  ) {
-                    addDiscount(secondDiscountRule.discount, secondDiscountMatchEnum + '-2')
-                  }
+            const trySecondaryDiscount = (secondaryParams, skipApplyAt) => {
+              const {
+                discountRule: secondDiscountRule,
+                discountMatchEnum: secondDiscountMatchEnum
+              } = matchDiscountRule(discountRules, secondaryParams, skipApplyAt)
+              if (secondDiscountRule) {
+                let checkAmount = params.amount[secondDiscountRule.discount.amount_field || 'total']
+                if (secondDiscountRule.discount.amount_field !== 'freight') checkAmount -= getFreebiesPreview().value
+                if (
+                  secondDiscountRule.cumulative_discount !== false &&
+                  !(secondDiscountRule.discount.min_amount > checkAmount)
+                ) {
+                  const applied = addDiscount(secondDiscountRule.discount, secondDiscountMatchEnum + '-2')
+                  if (applied) return secondDiscountRule.discount.apply_at || 'total'
                 }
               }
+              return null
+            }
+            const openItemsParams = {
+              items: params.items,
+              amount: params.amount,
+              domain: params.domain,
+              customer: params.customer
+            }
+            if (!checkOpenPromotion(discountRule)) {
+              let appliedSecondaryApplyAt = null
+              if (discountRule.cumulative_discount !== false) {
+                // when primary was matched by coupon/UTM, search open promotions for different amount
+                appliedSecondaryApplyAt = trySecondaryDiscount(openItemsParams, discountRule.discount.apply_at || 'total')
+              }
 
-              // check for additional open discount
+              // check for additional open discount (skip secondary's apply_at to avoid double application)
               const {
                 discountRule: openDiscountRule,
                 discountMatchEnum: openDiscountMatchEnum
-              } = matchDiscountRule(discountRules, {})
+              } = matchDiscountRule(discountRules, openItemsParams, appliedSecondaryApplyAt)
               if (
                 openDiscountRule &&
                 openDiscountRule.cumulative_discount !== false &&
@@ -630,6 +642,9 @@ ${discountedSkus.map((sku) => `\n${sku}: ${discountPerSku[sku].toFixed(2)}`)}
                   }
                 }
               }
+            } else if (discountRule.cumulative_discount !== false) {
+              // when primary is an open promotion, also check for secondary open discount with different amount
+              trySecondaryDiscount(params, discountRule.discount.apply_at || 'total')
             }
 
             try {
