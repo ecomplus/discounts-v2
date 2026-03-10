@@ -505,7 +505,7 @@ ${discountedSkus.map((sku) => `\n${sku}: ${discountPerSku[sku].toFixed(2)}`)}
         if (
           checkOpenPromotion(discountRule) &&
           discountRule.discount.apply_at === 'freight' &&
-          !params.amount?.freight
+          !(params.amount && params.amount.freight)
         ) {
           const { discountRule: altRule, discountMatchEnum: altEnum } = matchDiscountRule(discountRules, params, 'freight')
           if (altRule) {
