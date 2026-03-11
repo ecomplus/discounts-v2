@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.22.4](https://github.com/ecomplus/application-starter/compare/v2.22.3...v2.22.4) (2026-03-11)
+
+
+### Bug Fixes
+
+* migrate to Node 20 and replace deprecated functions.config() ([8718285](https://github.com/ecomplus/application-starter/commit/87182858a74c7a7c13bf9c7154fd3c4d3f8964cd))
+
 ### [2.22.3](https://github.com/ecomplus/application-starter/compare/v2.22.2...v2.22.3) (2026-03-09)
 
 
