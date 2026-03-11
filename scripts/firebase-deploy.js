@@ -1,5 +1,7 @@
 require('dotenv').config()
 
+const fs = require('fs')
+const path = require('path')
 const {
   FIREBASE_TOKEN,
   SERVER_OPERATOR_TOKEN,
@@ -12,21 +14,21 @@ const { name, version } = require('../package.json')
 const { project, baseUri } = require('./_constants')
 const client = require('firebase-tools')
 
-const config = [
-  `pkg.version=${version}`,
-  `pkg.name=${name}`,
-  `server.operator_token=${SERVER_OPERATOR_TOKEN}`
+const envLines = [
+  `PKG_VERSION=${version}`,
+  `PKG_NAME=${name}`,
+  `SERVER_OPERATOR_TOKEN=${SERVER_OPERATOR_TOKEN}`
 ]
 if (SERVER_BASE_URI) {
-  config.push(`server.base_uri=${SERVER_BASE_URI}`)
+  envLines.push(`SERVER_BASE_URI=${SERVER_BASE_URI}`)
 }
+fs.writeFileSync(path.join(__dirname, '../functions/.env'), envLines.join('\n') + '\n')
 
-client.functions.config.set(config, { project })
-  .then(() => client.deploy({
+client.deploy({
     project,
     token: FIREBASE_TOKEN,
     force: true
-  }))
+  })
 
   .then(() => {
     console.log(
