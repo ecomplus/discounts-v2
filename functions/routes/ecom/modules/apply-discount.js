@@ -71,11 +71,12 @@ ${discountedSkus.map((sku) => `\n${sku}: ${discountPerSku[sku].toFixed(2)}`)}
         query: '',
         max: discountRule.total_usage_limit
       }]
+      const auth = await appSdk.getAuth(storeId)
       for (let i = 0; i < usageLimits.length; i++) {
         const { query, max } = usageLimits[i]
         if (max) {
           // send Store API request to list orders with filters
-          const { response } = await appSdk.apiRequest(storeId, `${url}${query}`)
+          const { response } = await appSdk.apiRequest(storeId, `${url}${query}`, 'GET', null, auth)
           const countOrders = response.data.result
             .filter(({ status }) => status !== 'cancelled')
             .length
@@ -462,6 +463,7 @@ ${discountedSkus.map((sku) => `\n${sku}: ${discountPerSku[sku].toFixed(2)}`)}
                 discountedItemIds = discountedItemIds.concat(kitItems.map(item => item.product_id))
               }
             } catch (err) {
+              console.error(`CANT_CHECK_USAGE_LIMITS store #${storeId}:`, err)
               return res.status(409).send({
                 error: 'CANT_CHECK_USAGE_LIMITS',
                 message: err.message
@@ -505,7 +507,7 @@ ${discountedSkus.map((sku) => `\n${sku}: ${discountPerSku[sku].toFixed(2)}`)}
         if (
           checkOpenPromotion(discountRule) &&
           discountRule.discount.apply_at === 'freight' &&
-          !params.amount?.freight
+          !(params.amount && params.amount.freight)
         ) {
           const { discountRule: altRule, discountMatchEnum: altEnum } = matchDiscountRule(discountRules, params, 'freight')
           if (altRule) {
@@ -671,6 +673,7 @@ ${discountedSkus.map((sku) => `\n${sku}: ${discountPerSku[sku].toFixed(2)}`)}
               addFreebies()
               return respondSuccess()
             } catch (err) {
+              console.error(`CANT_CHECK_USAGE_LIMITS store #${storeId}:`, err)
               return res.status(409).send({
                 error: 'CANT_CHECK_USAGE_LIMITS',
                 message: err.message
