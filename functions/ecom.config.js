@@ -287,6 +287,11 @@ const app = {
                 "title": "ID do produto"
               }
             },
+            "discount_products_subtotal": {
+              "type": "boolean",
+              "title": "Descontar apenas produtos selecionados",
+              "description": "Se ativo, o desconto será calculado apenas sobre o subtotal dos produtos da campanha (`product_ids`) presentes no carrinho, e não sobre o carrinho inteiro"
+            },
             "excluded_product_ids": {
               "title": "Produtos excluídos",
               "description": "Se preenchido, o desconto será inválido se um dos produtos estiver no carrinho",
