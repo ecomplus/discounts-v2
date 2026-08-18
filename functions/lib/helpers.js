@@ -271,6 +271,17 @@ const mapCampaignProducts = (rule, params) => {
   return { valid: true, items: [] }
 }
 
+const getCampaignDiscountAmount = (rule, params, filteredItems) => {
+  if (Array.isArray(filteredItems) && filteredItems.length) {
+    // cap the discount base to the subtotal of the selected campaign products
+    return filteredItems.reduce((subtotal, item) => {
+      return subtotal + (ecomUtils.price(item) * (item.quantity || 1))
+    }, 0)
+  }
+  const applyAt = (rule.discount && rule.discount.apply_at) || 'total'
+  return (params.amount && params.amount[applyAt]) || 0
+}
+
 module.exports = {
   validateDateRange,
   validateCustomerId,
@@ -278,5 +289,6 @@ module.exports = {
   getValidDiscountRules,
   matchDiscountRule,
   matchFreebieRule,
-  mapCampaignProducts
+  mapCampaignProducts,
+  getCampaignDiscountAmount
 }

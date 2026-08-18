@@ -7,7 +7,8 @@ const {
   getValidDiscountRules,
   matchDiscountRule,
   matchFreebieRule,
-  mapCampaignProducts
+  mapCampaignProducts,
+  getCampaignDiscountAmount
 } = require('../../../lib/helpers')
 
 exports.post = ({ appSdk, admin }, req, res) => {
@@ -594,7 +595,10 @@ ${discountedSkus.map((sku) => `\n${sku}: ${discountPerSku[sku].toFixed(2)}`)}
           }
 
           // we have a discount to apply \o/
-          const discountValue = addDiscount(discountRule.discount, discountMatchEnum)
+          const maxDiscount = discountRule.discount_products_subtotal
+            ? getCampaignDiscountAmount(discountRule, params, filteredItems)
+            : undefined
+          const discountValue = addDiscount(discountRule.discount, discountMatchEnum, undefined, maxDiscount)
           if (discountValue) {
             if (filteredItems?.length) {
               pointDiscountToEachItem(discountValue, filteredItems)
